@@ -21,6 +21,7 @@ namespace BlogMVC.Web.Controllers
         }
 
         [HttpPost]
+        [ActionName("Add")]
         public IActionResult Add(AddTagRequest addTagRequest)
         {
             var tag = new Tag
@@ -31,8 +32,17 @@ namespace BlogMVC.Web.Controllers
 
             blogMVCDbContext.Tags.Add(tag);
             blogMVCDbContext.SaveChanges();
-            
-            return View("Add");
+
+            return RedirectToAction("List");
+        }
+
+        [HttpGet]
+        [ActionName("List")]
+        public IActionResult List()
+        {
+            var tags = blogMVCDbContext.Tags.ToList();
+
+            return View(tags);
         }
     }
 }
