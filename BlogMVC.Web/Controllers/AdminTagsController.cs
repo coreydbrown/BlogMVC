@@ -89,5 +89,21 @@ namespace BlogMVC.Web.Controllers
 
             return RedirectToAction("Edit", new { id = editTagRequest.Id });
         }
+
+        [HttpPost]
+        public IActionResult Delete(EditTagRequest editTagRequest)
+        {
+            var tag = blogMVCDbContext.Tags.Find(editTagRequest.Id);
+
+            if (tag != null)
+            {
+                blogMVCDbContext.Tags.Remove(tag);
+                blogMVCDbContext.SaveChanges();
+
+                return RedirectToAction("list");
+            }
+
+            return RedirectToAction("Edit", new { editTagRequest.Id });
+        }
     }
 }
