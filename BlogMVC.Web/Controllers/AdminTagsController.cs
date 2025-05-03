@@ -2,6 +2,7 @@
 using BlogMVC.Web.Models.Domain;
 using BlogMVC.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogMVC.Web.Controllers
 {
@@ -22,7 +23,7 @@ namespace BlogMVC.Web.Controllers
 
         [HttpPost]
         [ActionName("Add")]
-        public IActionResult Add(AddTagRequest addTagRequest)
+        public async Task<IActionResult> Add(AddTagRequest addTagRequest)
         {
             var tag = new Tag
             {
@@ -30,25 +31,25 @@ namespace BlogMVC.Web.Controllers
                 DisplayName = addTagRequest.DisplayName,
             };
 
-            blogMVCDbContext.Tags.Add(tag);
-            blogMVCDbContext.SaveChanges();
+            await blogMVCDbContext.Tags.AddAsync(tag);
+            await blogMVCDbContext.SaveChangesAsync();
 
             return RedirectToAction("List");
         }
 
         [HttpGet]
         [ActionName("List")]
-        public IActionResult List()
+        public async Task<IActionResult> List()
         {
-            var tags = blogMVCDbContext.Tags.ToList();
+            var tags = await blogMVCDbContext.Tags.ToListAsync();
 
             return View(tags);
         }
 
         [HttpGet]
-        public IActionResult Edit(Guid id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            var tag = blogMVCDbContext.Tags.FirstOrDefault(x => x.Id == id);
+            var tag = await blogMVCDbContext.Tags.FirstOrDefaultAsync(x => x.Id == id);
 
             if (tag != null)
             {
@@ -66,7 +67,7 @@ namespace BlogMVC.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(EditTagRequest editTagRequest)
+        public async Task<IActionResult> Edit(EditTagRequest editTagRequest)
         {
             var tag = new Tag
             {
@@ -75,14 +76,14 @@ namespace BlogMVC.Web.Controllers
                 DisplayName = editTagRequest.DisplayName
             };
 
-            var existingTag = blogMVCDbContext.Tags.Find(tag.Id);
+            var existingTag = await blogMVCDbContext.Tags.FindAsync(tag.Id);
 
             if (existingTag != null)
             {
                 existingTag.Name = tag.Name;
                 existingTag.DisplayName = tag.DisplayName;
 
-                blogMVCDbContext.SaveChanges();
+                await blogMVCDbContext.SaveChangesAsync();
 
                 return RedirectToAction("List");
             }
@@ -91,14 +92,14 @@ namespace BlogMVC.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Delete(EditTagRequest editTagRequest)
+        public async Task<IActionResult> Delete(EditTagRequest editTagRequest)
         {
-            var tag = blogMVCDbContext.Tags.Find(editTagRequest.Id);
+            var tag = await blogMVCDbContext.Tags.FindAsync(editTagRequest.Id);
 
             if (tag != null)
             {
                 blogMVCDbContext.Tags.Remove(tag);
-                blogMVCDbContext.SaveChanges();
+                await blogMVCDbContext.SaveChangesAsync();
 
                 return RedirectToAction("list");
             }
