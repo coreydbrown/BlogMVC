@@ -14,6 +14,6 @@ namespace BlogMVC.Web.Models.ViewModels
         public string Author { get; set; }
         public Boolean Visible { get; set; }
         public IEnumerable<SelectListItem> Tags { get; set; }
-        public string SelectedTags { get; set; }
+        public string[] SelectedTags { get; set; } = Array.Empty<string>();
     }
 }
