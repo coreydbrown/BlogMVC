@@ -8,6 +8,8 @@ namespace BlogMVC.Web.Repositories
 
         Task<BlogPost?> GetAsync(Guid id);
 
+        Task<BlogPost?> GetByUrlHandleAsync(string urlHandle);
+
         Task<BlogPost> AddAsync(BlogPost blogPost);
 
         Task<BlogPost?> UpdateAsync(BlogPost blogPost);
